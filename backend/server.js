@@ -7,6 +7,8 @@ import departmentRoutes from "./routes/department.routes.js";
 import supplierRoutes from "./routes/supplier.routes.js"
 import categoryRoutes from "./routes/category.routes.js";
 import itemRoutes from "./routes/item.routes.js";
+import cors from "cors";
+import path from "path"
 
 dotenv.config();
 connectDB()
@@ -14,7 +16,12 @@ connectDB()
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use(
+    cors({
+        origin: "http://localhost:5173"
+    })
+);
 
 // Routes
 

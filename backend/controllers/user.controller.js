@@ -25,9 +25,16 @@ export const createUser = async (req, res) => {
         role = role?.trim();
         department = department?.trim();
 
-        if (!fullName || !email || !password || !phone || !role || !department) {
+        if (!fullName || !email || !password || !phone || !role) {
             return res.status(400).json({
                 message: "Please provide all required fields",
+            });
+        }
+
+        if (role !== "Admin" && !department) {
+            return res.status(400).json({
+                success: false,
+                message: "Department is required for non-admin users."
             });
         }
 
@@ -86,7 +93,7 @@ export const createUser = async (req, res) => {
                     message: "Department not found",
                 });
             }
-            if(!departmentExists.isActive){
+            if (!departmentExists.isActive) {
                 return res.status(400).json({
                     message: "Cannot assign user to inactive department",
                 });
@@ -157,31 +164,9 @@ export const getUsers = async (req, res) => {
     try {
         const { search, role, isActive } = req.query;
 
-        // Build filter object
-        const filter = {};
-
-        // Search by full name or email
-        if (search) {
-            filter.$or = [
-                { fullName: { $regex: search.trim(), $options: "i" } },
-                { email: { $regex: search.trim(), $options: "i" } },
-            ];
-        }
-
-        // Filter by role
-        if (role) {
-            filter.role = role.trim();
-        }
-
-        // Filter by active status
-        if (isActive !== undefined) {
-            filter.isActive = isActive === "true";
-        }
-
-
-        const users = await User.find(filter)
+        const users = await User.find()
             .select("-password")
-            .populate("department", "name isActive")
+            .populate("department", "name isActive code")
             .sort({ createdAt: -1 });
 
         res.status(200).json({
@@ -264,11 +249,11 @@ export const updateUser = async (req, res) => {
             phone,
             role,
             department,
-            profileImage,
             isActive,
         } = req.body;
 
 
+        const profileImage = req.file ? req.file.filename : "";
         // Trim and normalize input
         fullName = fullName?.trim();
         email = email?.trim().toLowerCase();
@@ -514,7 +499,7 @@ export const updateUser = async (req, res) => {
         }
 
 
-        if (profileImage !== undefined) {
+        if (profileImage !== undefined && profileImage.trim() !== "") {
             updateData.profileImage = profileImage.trim();
         }
 
@@ -560,6 +545,65 @@ export const updateUser = async (req, res) => {
         console.error("Error updating user:", error);
 
 
+        res.status(500).json({
+            success: false,
+            message: "Internal Server error",
+            error: error.message,
+        });
+    }
+};
+
+
+// RESET PASSWORD only Admin can reset password for other users
+export const resetPassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Validate user ID
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid user ID",
+            });
+        }
+
+        // Find user
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        // Generate a random 6-character temporary password
+        const generateTemporaryPassword = () => {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let password = '';
+            for (let i = 0; i < 8; i++) {
+                password += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return password;
+        };
+
+        const temporaryPassword = generateTemporaryPassword();
+
+        // Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(temporaryPassword, salt);
+
+        // Update user's password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Password reset successfully",
+            temporaryPassword: temporaryPassword,
+        });
+
+    } catch (error) {
+        console.error("Error resetting password:", error);
         res.status(500).json({
             success: false,
             message: "Internal Server error",

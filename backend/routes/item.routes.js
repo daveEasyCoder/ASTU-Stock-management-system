@@ -1,10 +1,14 @@
 import express from "express";
-import { createItem } from "../controllers/item.controller.js";
-import uploadItemImage from "../middleware/upload.middleware.js";
+import { createItem, getItemById, getItems, updateItem } from "../controllers/item.controller.js";
+import uploadImage from "../middleware/upload.middleware.js";
+
 
 const router = express.Router();
 
-router.post("/create-item", uploadItemImage.single("image"), createItem);
+router.post("/create-item", uploadImage("items").single("image"), createItem);
+router.get("/get-items", getItems);
+router.get("/get-item/:id", getItemById);
+router.put("/update-item/:id", uploadImage("items").single("image"), updateItem);
 
 
 
