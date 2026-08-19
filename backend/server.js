@@ -8,6 +8,8 @@ import supplierRoutes from "./routes/supplier.routes.js"
 import categoryRoutes from "./routes/category.routes.js";
 import itemRoutes from "./routes/item.routes.js";
 import purchaseRoutes from "./routes/purchase.routes.js"
+import stockTransactionRoutes from './routes/stockTransaction.routes.js';
+
 import cors from "cors";
 import path from "path"
 
@@ -32,6 +34,8 @@ app.use("/api/suppliers", supplierRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/items",itemRoutes)
 app.use("/api/purchases",purchaseRoutes)
+app.use("/api/purchases",purchaseRoutes)
+app.use('/api/stock-transactions', stockTransactionRoutes);
 
 
 const PORT = process.env.PORT || 4000;

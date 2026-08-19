@@ -9,6 +9,7 @@ import StockTransaction from '../model/stockTransaction.js';
 
 
 
+// CREATE PURCHASE (Admin/Stock Manager)
 export const createPurchase = async (req, res) => {
     try {
         const {
@@ -243,6 +244,102 @@ export const createPurchase = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Internal server error while creating purchase.',
+        });
+    }
+};
+
+//  Purchase list
+
+export const getPurchases = async (req, res) => {
+    try {
+        const purchases = await Purchase.find()
+            .populate('supplier', 'companyName email phone')
+            .populate('createdBy', 'fullName email')
+            .select('-__v')
+            .sort({ purchaseDate: -1, createdAt: -1 })
+            .lean();
+
+        return res.status(200).json({
+            success: true,
+            purchases,
+            count: purchases.length,
+        });
+
+    } catch (error) {
+        console.error('Get Purchases Error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error.',
+        });
+    }
+};
+
+/**
+ * GET purchase by ID with all populated fields
+ * Includes: Supplier, CreatedBy, PurchasedItems (with Item details), Stock Transactions
+ */
+export const getPurchaseById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Validate ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid purchase ID.',
+            });
+        }
+
+        // Find purchase and populate all references
+        const purchase = await Purchase.findById(id)
+            .populate('supplier', 'companyName contactPerson email phone address isActive')
+            .populate('createdBy', 'fullName email')
+            .populate({
+                path: 'purchasedItems.item',
+                select: 'name code unit category minimumStockLevel quantity isActive',
+                populate: {
+                    path: 'category',
+                    select: 'name'
+                }
+            })
+            .select('-__v')
+            .lean();
+
+        if (!purchase) {
+            return res.status(404).json({
+                success: false,
+                message: 'Purchase not found.',
+            });
+        }
+
+        // --- Fetch Related Stock Transactions for this purchase ---
+        const stockTransactions = await StockTransaction.find({ purchase: id })
+            .populate('item', 'name code unit')
+            .populate('performedBy', 'fullName email')
+            .populate('supplier', 'companyName')
+            .populate('department', 'name code')
+            .sort({ transactionDate: -1, createdAt: -1 })
+            .lean();
+
+        // --- Calculate additional stats ---
+        const totalItems = purchase.purchasedItems?.length || 0;
+        const totalQuantity = purchase.purchasedItems?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+
+        return res.status(200).json({
+            success: true,
+            purchase,
+            stockTransactions: stockTransactions || [],
+            stats: {
+                totalItems,
+                totalQuantity,
+            }
+        });
+
+    } catch (error) {
+        console.error('Get Purchase By ID Error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error.',
         });
     }
 };

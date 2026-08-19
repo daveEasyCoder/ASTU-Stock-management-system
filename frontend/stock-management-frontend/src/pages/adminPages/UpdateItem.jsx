@@ -790,7 +790,7 @@ const UpdateItem = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate(`/admin/item-detail/${id}`)}
+                  onClick={() => navigate(-1)}
                   className="flex-1 sm:flex-none px-6 py-2.5 text-sm font-medium text-slate-700 border border-slate-300 hover:bg-slate-50 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   <FaArrowLeft />

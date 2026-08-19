@@ -23,6 +23,9 @@ import ItemList from './pages/adminPages/ItemList'
 import ItemDetail from './pages/adminPages/ItemDetail'
 import UpdateItem from './pages/adminPages/UpdateItem'
 import CreatePurchase from './pages/adminPages/CreatePurchase'
+import PurchaseList from './pages/adminPages/PurchaseList'
+import PurchaseDetail from './pages/adminPages/PurchaseDetail'
+import StockTransactionsByPurchase from './pages/adminPages/StockTransactionsByPurchase'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -64,6 +67,10 @@ function App() {
 
           // Item routes
         <Route path='create-purchase' element={<CreatePurchase />} />
+        <Route path='purchase-list' element={<PurchaseList />} />
+        <Route path='purchase-detail/:id' element={<PurchaseDetail />} />
+
+         <Route path='stock-transaction-by-purchase/:purchaseId' element={<StockTransactionsByPurchase />} />
 
       </Route>
     </Routes>
