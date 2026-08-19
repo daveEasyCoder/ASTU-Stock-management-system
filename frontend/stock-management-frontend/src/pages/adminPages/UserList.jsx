@@ -260,11 +260,11 @@ const UserList = () => {
               {currentUsers.map((user) => (
                 <div
                   key={user._id}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden group"
+                  className="bg-white rounded-md shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden group"
                 >
                   {/* Avatar Section */}
                   <div className="relative">
-                    <div className={`h-24 w-full bg-gradient-to-r from-blue-50 to-blue-100`}>
+                    <div className={`h-24 w-full bg-linear-to-r from-blue-50 to-blue-100`}>
                       {/* Status indicator */}
                       <div className="absolute top-3 right-3">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeColor(user.isActive)}`}>

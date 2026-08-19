@@ -7,6 +7,7 @@ import departmentRoutes from "./routes/department.routes.js";
 import supplierRoutes from "./routes/supplier.routes.js"
 import categoryRoutes from "./routes/category.routes.js";
 import itemRoutes from "./routes/item.routes.js";
+import purchaseRoutes from "./routes/purchase.routes.js"
 import cors from "cors";
 import path from "path"
 
@@ -30,6 +31,7 @@ app.use("/api/departments", departmentRoutes);
 app.use("/api/suppliers", supplierRoutes); 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/items",itemRoutes)
+app.use("/api/purchases",purchaseRoutes)
 
 
 const PORT = process.env.PORT || 4000;

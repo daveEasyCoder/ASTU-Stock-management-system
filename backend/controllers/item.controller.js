@@ -2,7 +2,6 @@
 import mongoose from "mongoose";
 import Item from "../model/item.js";
 import Category from "../model/category.js";
-import Supplier from "../model/supplier.js";
 
 
 // CREATE A NEW ITEM
@@ -12,7 +11,6 @@ export const createItem = async (req, res) => {
             name,
             code,
             category,
-            supplier,
             unit,
             description,
             minimumStockLevel,
@@ -22,7 +20,7 @@ export const createItem = async (req, res) => {
         name = name?.trim();
         code = code?.trim().toUpperCase();
         description = description?.trim();
-       const image = req.file ? req.file.filename : "";
+        const image = req.file ? req.file.filename : "";
 
         // Validate required fields
         if (!name || !code || !category || !unit) {
@@ -40,14 +38,13 @@ export const createItem = async (req, res) => {
             });
         }
 
-        // Validate supplier ID if provided
-        if (supplier && !mongoose.Types.ObjectId.isValid(supplier)) {
+
+        if (minimumStockLevel < 0) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid supplier ID.",
+                message: 'Minimum stock level cannot be negative.',
             });
         }
-
         // Check duplicate item code
         const existingItem = await Item.findOne({ code });
 
@@ -75,25 +72,6 @@ export const createItem = async (req, res) => {
             });
         }
 
-        // Check supplier exists and is active if provided
-        if (supplier) {
-            const existingSupplier = await Supplier.findById(supplier);
-
-            if (!existingSupplier) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Supplier not found.",
-                });
-            }
-
-            if (!existingSupplier.isActive) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Cannot assign an inactive supplier.",
-                });
-            }
-        }
-
         const units = [
             "Piece",
             "Box",
@@ -117,7 +95,6 @@ export const createItem = async (req, res) => {
             name,
             code,
             category,
-            supplier,
             unit,
             description,
             minimumStockLevel,
@@ -130,10 +107,6 @@ export const createItem = async (req, res) => {
             {
                 path: "category",
                 select: "name",
-            },
-            {
-                path: "supplier",
-                select: "companyName",
             },
         ]);
 
@@ -174,7 +147,6 @@ export const getItems = async (req, res) => {
     try {
         const items = await Item.find()
             .populate("category", "name")
-            .populate("supplier", "companyName")
             .select("-__v")
             .sort({ createdAt: -1 });
 
@@ -210,7 +182,6 @@ export const getItemById = async (req, res) => {
 
         const item = await Item.findById(id)
             .populate("category", "name")
-            .populate("supplier", "companyName")
             .select("-__v");
 
         // Check if item exists
@@ -251,9 +222,7 @@ export const updateItem = async (req, res) => {
 
         let {
             name,
-            code,
             category,
-            supplier,
             unit,
             description,
             minimumStockLevel,
@@ -262,7 +231,6 @@ export const updateItem = async (req, res) => {
 
         // Normalize input
         if (name !== undefined) name = name.trim();
-        if (code !== undefined) code = code.trim().toUpperCase();
         if (description !== undefined) description = description.trim();
 
         // Find item
@@ -297,47 +265,6 @@ export const updateItem = async (req, res) => {
                 return res.status(400).json({
                     success: false,
                     message: "Cannot assign an inactive category.",
-                });
-            }
-        }
-
-        // Validate supplier if provided
-        if (supplier !== undefined && supplier !== null && supplier !== "") {
-            if (!mongoose.Types.ObjectId.isValid(supplier)) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Invalid supplier ID.",
-                });
-            }
-
-            const existingSupplier = await Supplier.findById(supplier);
-
-            if (!existingSupplier) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Supplier not found.",
-                });
-            }
-
-            if (!existingSupplier.isActive) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Cannot assign an inactive supplier.",
-                });
-            }
-        }
-
-        // Check duplicate item code
-        if (code !== undefined && code !== item.code) {
-            const existingItem = await Item.findOne({
-                code,
-                _id: { $ne: id },
-            });
-
-            if (existingItem) {
-                return res.status(409).json({
-                    success: false,
-                    message: "Item code already exists.",
                 });
             }
         }
@@ -381,13 +308,7 @@ export const updateItem = async (req, res) => {
 
         // Update only provided fields
         if (name !== undefined) item.name = name;
-        if (code !== undefined) item.code = code;
         if (category !== undefined) item.category = category;
-
-        if (supplier !== undefined) {
-            item.supplier = supplier || null;
-        }
-
         if (unit !== undefined) item.unit = unit;
         if (description !== undefined) item.description = description;
         if (minimumStockLevel !== undefined) {
@@ -406,10 +327,6 @@ export const updateItem = async (req, res) => {
             {
                 path: "category",
                 select: "name",
-            },
-            {
-                path: "supplier",
-                select: "companyName",
             },
         ]);
 
@@ -446,5 +363,3 @@ export const updateItem = async (req, res) => {
 
 
 // export const deleteItem = async(req,res) => {}
-// export const searchItems = async(req,res) => {}
-// export const getLowStockItems = async(req,res) => {}

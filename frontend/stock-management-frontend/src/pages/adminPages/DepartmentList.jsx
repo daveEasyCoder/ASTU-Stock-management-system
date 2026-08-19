@@ -277,7 +277,7 @@ const DepartmentList = () => {
               {currentDepartments.map((department) => (
                 <div
                   key={department._id}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden group"
+                  className="bg-white rounded shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden group"
                 >
                   {/* Department Header */}
                   <div className={`h-2 ${department.isActive ? 'bg-green-500' : 'bg-red-500'}`}></div>

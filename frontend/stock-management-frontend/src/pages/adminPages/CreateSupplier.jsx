@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { 
+import {
   FaArrowLeft,
   FaSave,
   FaTimes,
@@ -15,7 +15,7 @@ import {
   FaMapMarkerAlt,
   FaPlus,
   FaTruck,
-  FaInfoCircle 
+  FaInfoCircle
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
@@ -23,7 +23,7 @@ import { useStock } from '../../context/StockContext';
 const CreateSupplier = () => {
   const { BASIC_URL } = useStock();
   const navigate = useNavigate();
-  
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     companyName: '',
@@ -67,11 +67,11 @@ const CreateSupplier = () => {
         break;
 
       case 'phone':
-        const phoneRegex = /^[0-9]{10}$/;
+        const phoneRegex = /^[0-9]{10,}$/; // At least 10 digits, only numbers
         if (!value) {
           newErrors.phone = 'Phone number is required';
         } else if (!phoneRegex.test(value.replace(/\s/g, ''))) {
-          newErrors.phone = 'Please enter a valid 10-digit phone number';
+          newErrors.phone = 'Please enter a valid phone number (minimum 10 digits, numbers only)';
         } else {
           delete newErrors.phone;
         }
@@ -137,7 +137,7 @@ const CreateSupplier = () => {
   const validateForm = () => {
     const allErrors = {};
     const fields = ['companyName', 'contactPerson', 'phone', 'email', 'address'];
-    
+
     fields.forEach(field => {
       const error = validateField(field, formData[field]);
       if (error[field]) {
@@ -160,7 +160,7 @@ const CreateSupplier = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       toast.error('Please fix all validation errors');
       return;
@@ -227,7 +227,7 @@ const CreateSupplier = () => {
             <FaArrowLeft className="mr-2" />
             Back to Supplier List
           </button>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Create New Supplier</h1>
@@ -267,13 +267,12 @@ const CreateSupplier = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter company name"
-                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                      errors.companyName && touched.companyName
+                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${errors.companyName && touched.companyName
                         ? 'border-red-500 focus:ring-red-500'
                         : touched.companyName && !errors.companyName && formData.companyName
-                        ? 'border-green-500 focus:ring-green-500'
-                        : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                          ? 'border-green-500 focus:ring-green-500'
+                          : 'border-gray-300 focus:ring-blue-500'
+                      }`}
                   />
                   {touched.companyName && !errors.companyName && formData.companyName && (
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -313,13 +312,12 @@ const CreateSupplier = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter contact person name"
-                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                      errors.contactPerson && touched.contactPerson
+                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${errors.contactPerson && touched.contactPerson
                         ? 'border-red-500 focus:ring-red-500'
                         : touched.contactPerson && !errors.contactPerson && formData.contactPerson
-                        ? 'border-green-500 focus:ring-green-500'
-                        : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                          ? 'border-green-500 focus:ring-green-500'
+                          : 'border-gray-300 focus:ring-blue-500'
+                      }`}
                   />
                   {touched.contactPerson && !errors.contactPerson && formData.contactPerson && (
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -359,13 +357,12 @@ const CreateSupplier = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter 10-digit phone number"
-                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                      errors.phone && touched.phone
+                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${errors.phone && touched.phone
                         ? 'border-red-500 focus:ring-red-500'
                         : touched.phone && !errors.phone && formData.phone
-                        ? 'border-green-500 focus:ring-green-500'
-                        : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                          ? 'border-green-500 focus:ring-green-500'
+                          : 'border-gray-300 focus:ring-blue-500'
+                      }`}
                   />
                   {touched.phone && !errors.phone && formData.phone && (
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -397,13 +394,12 @@ const CreateSupplier = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter email address"
-                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                      errors.email && touched.email
+                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${errors.email && touched.email
                         ? 'border-red-500 focus:ring-red-500'
                         : touched.email && !errors.email && formData.email
-                        ? 'border-green-500 focus:ring-green-500'
-                        : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                          ? 'border-green-500 focus:ring-green-500'
+                          : 'border-gray-300 focus:ring-blue-500'
+                      }`}
                   />
                   {touched.email && !errors.email && formData.email && (
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -443,13 +439,12 @@ const CreateSupplier = () => {
                     onBlur={handleBlur}
                     placeholder="Enter full address (street, city, state, zip)"
                     rows="3"
-                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors resize-none ${
-                      errors.address && touched.address
+                    className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors resize-none ${errors.address && touched.address
                         ? 'border-red-500 focus:ring-red-500'
                         : touched.address && !errors.address && formData.address
-                        ? 'border-green-500 focus:ring-green-500'
-                        : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                          ? 'border-green-500 focus:ring-green-500'
+                          : 'border-gray-300 focus:ring-blue-500'
+                      }`}
                   />
                   {touched.address && !errors.address && formData.address && (
                     <div className="absolute top-3 right-0 pr-3 flex items-center">

@@ -22,11 +22,6 @@ const itemSchema = new mongoose.Schema(
       required: true,
     },
 
-    supplier: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Supplier",
-    },
-
     unit: {
       type: String,
       required: true,

@@ -273,7 +273,7 @@ const CategoryList = () => {
               {currentCategories.map((category) => (
                 <div
                   key={category._id}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden group"
+                  className="bg-white rounded-md shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden group"
                 >
                   {/* Category Header */}
                   <div className={`h-2 ${category.isActive ? 'bg-green-500' : 'bg-red-500'}`}></div>
