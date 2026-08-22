@@ -14,7 +14,6 @@ import {
   FaExclamationCircle,
   FaChevronLeft,
   FaChevronRight,
-  FaFilter,
   FaTimes,
   FaToggleOn,
   FaToggleOff,
@@ -25,10 +24,9 @@ import {
   FaCalendarAlt
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const DepartmentList = () => {
-  const { BASIC_URL } = useStock();
   const navigate = useNavigate();
   
   const [departments, setDepartments] = useState([]);
@@ -49,7 +47,7 @@ const DepartmentList = () => {
   const fetchDepartments = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BASIC_URL}/api/departments/get-departments`);
+      const response = await axiosInstance.get(`/api/departments/get-departments`);
       if (response.data.success) {
         setDepartments(response.data.departments);
       }
@@ -94,9 +92,7 @@ const DepartmentList = () => {
     
     setActionLoading(true);
     try {
-      await axios.delete(`${BASIC_URL}/departments/delete-department/${selectedDepartment._id}`, {
-        withCredentials: true
-      });
+      await axiosInstance.delete(`/api/departments/delete-department/${selectedDepartment._id}`);
       toast.success('Department deleted successfully!');
       fetchDepartments();
       setShowDeleteModal(false);
@@ -112,8 +108,8 @@ const DepartmentList = () => {
   // Handle toggle status
   const handleToggleStatus = async (department) => {
     try {
-      const response = await axios.put(
-        `${BASIC_URL}/api/departments/update-department/${department._id}`,
+      const response = await axiosInstance.put(
+        `/api/departments/update-department/${department._id}`,
         { isActive: !department.isActive }
       );
       if (response.data.success) {

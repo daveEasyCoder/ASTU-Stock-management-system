@@ -15,10 +15,9 @@ import {
   FaUniversity
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const CreateDepartment = () => {
-  const { BASIC_URL } = useStock();
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(false);
@@ -145,8 +144,8 @@ const CreateDepartment = () => {
         description: formData.description.trim() || undefined
       };
 
-      const response = await axios.post(
-        `${BASIC_URL}/api/departments/create-department`,
+      const response = await axiosInstance.post(
+        `/api/departments/create-department`,
         submitData
       );
 

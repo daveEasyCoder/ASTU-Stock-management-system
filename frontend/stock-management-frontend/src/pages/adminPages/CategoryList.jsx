@@ -23,9 +23,9 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const CategoryList = () => {
-  const { BASIC_URL } = useStock();
   const navigate = useNavigate();
   
   const [categories, setCategories] = useState([]);
@@ -46,7 +46,7 @@ const CategoryList = () => {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BASIC_URL}/api/categories/get-categories`);
+      const response = await axiosInstance.get(`/api/categories/get-categories`);
       if (response.data.success) {
         setCategories(response.data.categories);
       }
@@ -89,9 +89,7 @@ const CategoryList = () => {
     
     setActionLoading(true);
     try {
-      await axios.delete(`${BASIC_URL}/categories/delete-category/${selectedCategory._id}`, {
-        withCredentials: true
-      });
+      await axiosInstance.delete(`/api/categories/delete-category/${selectedCategory._id}`);
       toast.success('Category deleted successfully!');
       fetchCategories();
       setShowDeleteModal(false);
@@ -107,8 +105,8 @@ const CategoryList = () => {
   // Handle toggle status
   const handleToggleStatus = async (category) => {
     try {
-      const response = await axios.put(
-        `${BASIC_URL}/api/categories/update-category/${category._id}`,
+      const response = await axiosInstance.put(
+        `/api/categories/update-category/${category._id}`,
         { isActive: !category.isActive }
       );
       if (response.data.success) {
@@ -334,7 +332,7 @@ const CategoryList = () => {
                           )}
                         </button>
                         <button
-                          onClick={() => navigate(`/admin/edit-category/${category._id}`)}
+                          onClick={() => navigate(`/admin/update-category/${category._id}`)}
                           className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
                           title="Edit Category"
                         >

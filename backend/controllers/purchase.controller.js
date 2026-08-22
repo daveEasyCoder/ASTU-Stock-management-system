@@ -20,7 +20,7 @@ export const createPurchase = async (req, res) => {
             remarks,
         } = req.body;
 
-        const createdBy = "6a758c82e284c2699a31d20a";
+        const createdBy = req.user._id;
 
         // --- Validation (same as before) ---
         if (!supplier) {

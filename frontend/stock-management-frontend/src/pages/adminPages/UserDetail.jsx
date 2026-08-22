@@ -28,6 +28,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const UserDetail = () => {
   const { BASIC_URL } = useStock();
@@ -49,7 +50,7 @@ const UserDetail = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${BASIC_URL}/api/users/get-user/${id}`);
+      const response = await axiosInstance.get(`/api/users/get-user/${id}`);
       if (response.data.success) {
         setUser(response.data.user);
       }
@@ -133,9 +134,7 @@ const UserDetail = () => {
   const handleDeleteUser = async () => {
     setActionLoading(true);
     try {
-      await axios.delete(`${BASIC_URL}/api/users/delete-user/${id}`, {
-        withCredentials: true
-      });
+      await axiosInstance.delete(`/api/users/delete-user/${id}`);
       toast.success('User deleted successfully');
       navigate('/admin/user-list');
     } catch (error) {
@@ -151,8 +150,8 @@ const UserDetail = () => {
   const handleToggleStatus = async () => {
     setActionLoading(true);
     try {
-      const response = await axios.put(
-        `${BASIC_URL}/api/users/update-user/${id}`,
+      const response = await axiosInstance.put(
+        `$/api/users/update-user/${id}`,
         { isActive: !user.isActive }
       );
       if (response.data.success) {
@@ -174,8 +173,8 @@ const UserDetail = () => {
     
     setActionLoading(true);
     try {
-      const response = await axios.post(
-        `${BASIC_URL}/api/users/reset-password/${id}`,
+      const response = await axiosInstance.post(
+        `/api/users/reset-password/${id}`,
         {}
       );
       if (response.data.success) {

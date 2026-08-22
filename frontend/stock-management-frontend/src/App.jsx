@@ -26,6 +26,18 @@ import CreatePurchase from './pages/adminPages/CreatePurchase'
 import PurchaseList from './pages/adminPages/PurchaseList'
 import PurchaseDetail from './pages/adminPages/PurchaseDetail'
 import StockTransactionsByPurchase from './pages/adminPages/StockTransactionsByPurchase'
+import Unauthorized from './pages/Unauthorized'
+import Dashboard from './pages/adminPages/Dashboard'
+import UserLayout from './pages/userPages/UserLayout'
+import AvailableItems from './pages/userPages/AvailableItems'
+import CreateStockRequest from './pages/userPages/CreateStockRequest'
+import MyRequests from './pages/userPages/MyRequests'
+import PendingApprovals from './pages/userPages/PendingApprovals'
+import DepartmentRequests from './pages/userPages/DepartmentRequests'
+import RequestDetail from './pages/userPages/MyRequestDetail'
+import DepartmentDashboard from './pages/userPages/DepartmentDashboard'
+import DepartmentReport from './pages/userPages/DepartmentReport'
+import UserProfile from './pages/userPages/UserProfile'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -33,10 +45,30 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<UserLoginPage />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
+
+      <Route path='/user' element={<UserLayout />}>
+        <Route path="" element={<DepartmentDashboard />} />
+        <Route path='items' element={<AvailableItems />} />
+        <Route path='create-stock-request' element={<CreateStockRequest />} />
+        <Route path='my-requests' element={<MyRequests />} />
+        <Route path="request-detail/:id" element={<RequestDetail showCancelBtn={true} />} />
+        <Route path="pending-approvals" element={<PendingApprovals />} />
+        <Route path="pending-approval-detail/:id" element={<RequestDetail showCancelBtn={false} />} />
+        <Route path="department-requests" element={<DepartmentRequests />} />
+        <Route path="department-request-detail/:id" element={<RequestDetail showCancelBtn={false} />} />
+        <Route path="department-report" element={<DepartmentReport />} />
+        <Route path="profile" element={<UserProfile />} />
+
+
+      </Route>
+
+
+
 
       <Route path='/admin' element={<AdminLayout />}>
-
           // User routes
+        <Route path='' element={<Dashboard />} />
         <Route path='user-list' element={<UserList />} />
         <Route path='create-user' element={<CreateUser />} />
         <Route path='user-detail/:id' element={<UserDetail />} />
@@ -70,9 +102,10 @@ function App() {
         <Route path='purchase-list' element={<PurchaseList />} />
         <Route path='purchase-detail/:id' element={<PurchaseDetail />} />
 
-         <Route path='stock-transaction-by-purchase/:purchaseId' element={<StockTransactionsByPurchase />} />
+        <Route path='stock-transaction-by-purchase/:purchaseId' element={<StockTransactionsByPurchase />} />
 
       </Route>
+
     </Routes>
   )
 }

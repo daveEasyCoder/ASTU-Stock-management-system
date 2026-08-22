@@ -2,30 +2,24 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { 
   FaShoppingCart,
   FaSearch,
   FaPlus,
   FaEye,
-  FaEdit,
   FaTrash,
   FaSpinner,
   FaExclamationCircle,
   FaChevronLeft,
   FaChevronRight,
-  FaTimes,
   FaFileInvoice,
-  FaTruck,
-  FaUser,
-  FaCalendarAlt,
-  FaInfoCircle,
   FaBoxes,
   FaMoneyBillWave,
   FaFilter
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const PurchaseList = () => {
   const { BASIC_URL } = useStock();
@@ -49,13 +43,13 @@ const PurchaseList = () => {
       setLoading(true);
       try {
         // Fetch purchases
-        const purchaseRes = await axios.get(`${BASIC_URL}/api/purchases/get-purchases`);
+        const purchaseRes = await axiosInstance.get(`/api/purchases/get-purchases`);
         if (purchaseRes.data.success) {
           setAllPurchases(purchaseRes.data.purchases);
         }
 
         // Fetch suppliers for filter dropdown
-        const supplierRes = await axios.get(`${BASIC_URL}/api/suppliers/get-suppliers`);
+        const supplierRes = await axiosInstance.get(`/api/suppliers/get-suppliers`);
         if (supplierRes.data.success) {
           setSuppliers(supplierRes.data.suppliers);
         }

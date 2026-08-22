@@ -23,9 +23,9 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const CategoryDetail = () => {
-  const { BASIC_URL } = useStock();
   const navigate = useNavigate();
   const { id } = useParams();
   
@@ -46,7 +46,7 @@ const CategoryDetail = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${BASIC_URL}/api/categories/get-category/${id}`);
+      const response = await axiosInstance.get(`/api/categories/get-category/${id}`);
       if (response.data.success) {
         setCategory(response.data.category);
       }
@@ -67,8 +67,8 @@ const CategoryDetail = () => {
   const handleToggleStatus = async () => {
     setActionLoading(true);
     try {
-      const response = await axios.put(
-        `${BASIC_URL}/api/categories/update-category/${id}`,
+      const response = await axiosInstance.put(
+        `/api/categories/update-category/${id}`,
         { isActive: !category.isActive }
       );
       if (response.data.success) {
@@ -87,7 +87,7 @@ const CategoryDetail = () => {
   const handleDeleteCategory = async () => {
     setActionLoading(true);
     try {
-      await axios.delete(`${BASIC_URL}/api/categories/delete-category/${id}`, {
+      await axiosInstance.delete(`/api/categories/delete-category/${id}`, {
         withCredentials: true
       });
       toast.success('Category deleted successfully!');

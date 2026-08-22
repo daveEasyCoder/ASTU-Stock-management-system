@@ -33,6 +33,11 @@ const stockRequestSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      required: true,
+    },
 
     requestedItems: {
       type: [requestItemSchema],

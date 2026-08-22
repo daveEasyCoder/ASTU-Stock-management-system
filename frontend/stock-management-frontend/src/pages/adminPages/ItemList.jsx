@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { 
   FaBoxes,
   FaSearch,
@@ -17,17 +16,13 @@ import {
   FaTimes,
   FaToggleOn,
   FaToggleOff,
-  FaTag,
-  FaBuilding,
-  FaCube,
   FaExclamationTriangle,
   FaInfoCircle,
   FaClock,
-  FaCalendarAlt,
-  FaImage
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const ItemList = () => {
   const { BASIC_URL } = useStock();
@@ -60,7 +55,7 @@ const ItemList = () => {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BASIC_URL}/api/items/get-items`);
+      const response = await axiosInstance.get(`/api/items/get-items`);
       if (response.data.success) {
         setItems(response.data.items);
         // Calculate stats
@@ -83,7 +78,7 @@ const ItemList = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${BASIC_URL}/api/categories/get-categories`);
+      const response = await axiosInstance.get(`/api/categories/get-categories`);
       if (response.data.success) {
         setCategories(response.data.categories);
       }
@@ -131,9 +126,7 @@ const ItemList = () => {
     
     setActionLoading(true);
     try {
-      await axios.delete(`${BASIC_URL}/api/items/delete-item/${selectedItem._id}`, {
-        withCredentials: true
-      });
+      await axiosInstance.delete(`/api/items/delete-item/${selectedItem._id}`);
       toast.success('Item deleted successfully!');
       fetchItems();
       setShowDeleteModal(false);
@@ -149,8 +142,8 @@ const ItemList = () => {
   // Handle toggle status
   const handleToggleStatus = async (item) => {
     try {
-      const response = await axios.put(
-        `${BASIC_URL}/api/items/update-item/${item._id}`,
+      const response = await axiosInstance.put(
+        `/api/items/update-item/${item._id}`,
         { isActive: !item.isActive }
       );
       if (response.data.success) {

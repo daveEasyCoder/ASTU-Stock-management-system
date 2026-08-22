@@ -10,18 +10,16 @@ import {
   FaExclamationCircle,
   FaBoxes,
   FaTag,
-  FaBuilding,
   FaCube,
   FaInfoCircle,
-  FaEdit,
   FaCamera,
   FaTrash,
   FaHashtag,
-  FaWarehouse,
   FaPercent
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const UpdateItem = () => {
   const { BASIC_URL } = useStock();
@@ -63,7 +61,7 @@ const UpdateItem = () => {
       setLoadingData(true);
       try {
         // Fetch item details
-        const itemResponse = await axios.get(`${BASIC_URL}/api/items/get-item/${id}`);
+        const itemResponse = await axiosInstance.get(`/api/items/get-item/${id}`);
         
         if (itemResponse.data.success) {
           const item = itemResponse.data.item;
@@ -84,6 +82,7 @@ const UpdateItem = () => {
             unit: item.unit || '',
             description: item.description || '',
             minimumStockLevel: item.minimumStockLevel || 0,
+            quantity:item.quantity || 0,
             isActive: item.isActive !== undefined ? item.isActive : true
           });
           if (item.image) {
@@ -92,7 +91,7 @@ const UpdateItem = () => {
         }
 
         // Fetch categories
-        const catResponse = await axios.get(`${BASIC_URL}/api/categories/get-categories`);
+        const catResponse = await axiosInstance.get(`/api/categories/get-categories`);
         if (catResponse.data.success) {
           setCategories(catResponse.data.categories);
         }
@@ -308,8 +307,8 @@ const UpdateItem = () => {
         submitData.append('image', '');
       }
 
-      const response = await axios.put(
-        `${BASIC_URL}/api/items/update-item/${id}`,
+      const response = await axiosInstance.put(
+        `/api/items/update-item/${id}`,
         submitData,
         {
           headers: {

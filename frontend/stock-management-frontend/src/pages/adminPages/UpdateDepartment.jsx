@@ -12,11 +12,10 @@ import {
   FaCode,
   FaInfoCircle,
   FaUniversity,
-  FaToggleOn,
-  FaToggleOff
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const UpateDepartment = () => {
   const { BASIC_URL } = useStock();
@@ -40,7 +39,7 @@ const UpateDepartment = () => {
     const fetchDepartment = async () => {
       setFetching(true);
       try {
-        const response = await axios.get(`${BASIC_URL}/api/departments/get-department/${id}`);
+        const response = await axiosInstance.get(`/api/departments/get-department/${id}`);
         
         if (response.data.success) {
           const department = response.data.department;
@@ -213,8 +212,8 @@ const UpateDepartment = () => {
         submitData.isActive = formData.isActive;
       }
 
-      const response = await axios.put(
-        `${BASIC_URL}/api/departments/update-department/${id}`,
+      const response = await axiosInstance.put(
+        `/api/departments/update-department/${id}`,
         submitData
       );
 

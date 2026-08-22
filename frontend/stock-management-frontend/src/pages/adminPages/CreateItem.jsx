@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
   FaArrowLeft,
-  FaSave,
   FaTimes,
   FaSpinner,
   FaCheckCircle,
@@ -11,8 +10,6 @@ import {
   FaBoxes,
   FaCode,
   FaTag,
-  FaBuilding,
-  FaUser,
   FaCube,
   FaInfoCircle,
   FaPlus,
@@ -21,6 +18,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig'
 
 const CreateItem = () => {
   const { BASIC_URL } = useStock();
@@ -65,7 +63,7 @@ const CreateItem = () => {
       setLoadingData(true);
       try {
         // Fetch categories
-        const catResponse = await axios.get(`${BASIC_URL}/api/categories/get-categories`);
+        const catResponse = await axiosInstance.get(`/api/categories/get-categories`);
         if (catResponse.data.success) {
           setCategories(catResponse.data.categories);
         }
@@ -270,8 +268,8 @@ const CreateItem = () => {
         submitData.append('image', imageFile);
       }
 
-      const response = await axios.post(
-        `${BASIC_URL}/api/items/create-item`,
+      const response = await axiosInstance.post(
+        `/api/items/create-item`,
         submitData,
         {
         //   withCredentials: true,

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { 
   FaUser, 
   FaSearch, 
@@ -20,6 +19,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 
 const UserList = () => {
@@ -42,7 +42,7 @@ const UserList = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BASIC_URL}/api/users/get-users`);
+      const response = await axiosInstance.get('/api/users/get-users');
       if (response.data.success) {
         setUsers(response.data.users);
       }

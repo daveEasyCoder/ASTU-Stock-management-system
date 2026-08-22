@@ -18,6 +18,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const CreateUser = () => {
 
@@ -51,7 +52,6 @@ const CreateUser = () => {
     content: ''
   });
   const roles = [
-    { value: 'Admin', label: 'Admin', color: 'purple' },
     { value: 'Store Manager', label: 'Store Manager', color: 'blue' },
     { value: 'Department Head', label: 'Department Head', color: 'green' },
     { value: 'Staff', label: 'Staff', color: 'gray' }
@@ -59,7 +59,7 @@ const CreateUser = () => {
 
   // Generate random password function
   const generateRandomPassword = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters = '0123456789';
     let password = '';
     for (let i = 0; i < 6; i++) {
       password += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -91,8 +91,7 @@ const CreateUser = () => {
     const fetchDepartments = async () => {
       setLoadingDepartments(true);
       try {
-        const response = await axios.get(`${BASIC_URL}/api/departments/get-departments`, {
-        });
+        const response = await axiosInstance.get('/api/departments/get-departments');
         if (response.data.success) {
           setDepartments(response.data.departments);
         }
@@ -290,8 +289,8 @@ const CreateUser = () => {
         department: formData.department || null
       };
 
-      const response = await axios.post(
-        `${BASIC_URL}/api/users/create-user`,
+      const response = await axiosInstance.post(
+        '/api/users/create-user',
         submitData
       );
 

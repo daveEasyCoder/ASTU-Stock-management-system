@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import axiosInstance from '../../utils/axiosConfig.js';
 import { 
   FaArrowLeft,
   FaSave,
@@ -14,11 +15,9 @@ import {
   FaList
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { useStock } from '../../context/StockContext';
 
 
 const CreateCategory = () => {
-  const { BASIC_URL } = useStock();
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(false);
@@ -125,8 +124,8 @@ const CreateCategory = () => {
         description: formData.description.trim() || undefined
       };
 
-      const response = await axios.post(
-        `${BASIC_URL}/api/categories/create-category`,
+      const response = await axiosInstance.post(
+        `/api/categories/create-category`,
         submitData
       );
 

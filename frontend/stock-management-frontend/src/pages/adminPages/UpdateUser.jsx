@@ -21,6 +21,7 @@ import {
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const UpdateUser = () => {
     const { BASIC_URL } = useStock();
@@ -63,7 +64,7 @@ const UpdateUser = () => {
             setFetching(true);
             try {
                 // Fetch user details
-                const userResponse = await axios.get(`${BASIC_URL}/api/users/get-user/${id}`);
+                const userResponse = await axiosInstance.get(`/api/users/get-user/${id}`);
 
                 if (userResponse.data.success) {
                     const user = userResponse.data.user;
@@ -95,7 +96,7 @@ const UpdateUser = () => {
 
             // Fetch departments
             try {
-                const deptResponse = await axios.get(`${BASIC_URL}/api/departments/get-departments`);
+                const deptResponse = await axiosInstance.get(`/api/departments/get-departments`);
                 if (deptResponse.data.success) {
                     setDepartments(deptResponse.data.departments);
                 }
@@ -345,8 +346,8 @@ const UpdateUser = () => {
             }
 
 
-            const response = await axios.put(
-                `${BASIC_URL}/api/users/update-user/${id}`,
+            const response = await axiosInstance.put(
+                `/api/users/update-user/${id}`,
                 submitData,
                 {
                     headers: {

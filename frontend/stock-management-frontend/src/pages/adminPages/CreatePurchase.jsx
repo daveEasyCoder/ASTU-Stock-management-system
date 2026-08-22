@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosConfig'
 import {
   FaArrowLeft,
   FaSave,
   FaTimes,
   FaSpinner,
-  FaCheckCircle,
   FaExclamationCircle,
   FaShoppingCart,
   FaTruck,
-  FaHashtag,
   FaCalendarAlt,
   FaPlus,
   FaTrash,
@@ -18,7 +16,6 @@ import {
   FaTag,
   FaInfoCircle,
   FaFileInvoice,
-  FaUser,
   FaRandom
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -76,13 +73,13 @@ const CreatePurchase = () => {
       setLoadingData(true);
       try {
         // Fetch suppliers
-        const supResponse = await axios.get(`${BASIC_URL}/api/suppliers/get-suppliers`);
+        const supResponse = await axiosInstance.get(`/api/suppliers/get-suppliers`);
         if (supResponse.data.success) {
           setSuppliers(supResponse.data.suppliers);
         }
 
         // Fetch items
-        const itemResponse = await axios.get(`${BASIC_URL}/api/items/get-items`);
+        const itemResponse = await axiosInstance.get(`/api/items/get-items`);
         if (itemResponse.data.success) {
           setItems(itemResponse.data.items);
         }
@@ -238,8 +235,8 @@ const CreatePurchase = () => {
         remarks: formData.remarks.trim() || ''
       };
 
-      const response = await axios.post(
-        `${BASIC_URL}/api/purchases/create-purchase`,
+      const response = await axiosInstance.post(
+        `/api/purchases/create-purchase`,
         submitData
       );
 

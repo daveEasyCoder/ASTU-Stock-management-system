@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import { 
   FaArrowLeft,
   FaBoxes,
@@ -13,7 +12,6 @@ import {
   FaToggleOn,
   FaToggleOff,
   FaTag,
-  FaBuilding,
   FaCube,
   FaInfoCircle,
   FaClock,
@@ -22,10 +20,6 @@ import {
   FaShoppingCart,
   FaClipboardList,
   FaChartLine,
-  FaTruck,
-  FaUser,
-  FaEnvelope,
-  FaPhone,
   FaHashtag,
   FaWarehouse,
   FaBarcode,
@@ -36,6 +30,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const ItemDetail = () => {
   const { BASIC_URL } = useStock();
@@ -58,7 +53,7 @@ const ItemDetail = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${BASIC_URL}/api/items/get-item/${id}`);
+      const response = await axiosInstance.get(`/api/items/get-item/${id}`);
       if (response.data.success) {
         setItem(response.data.item);
       }
@@ -78,8 +73,8 @@ const ItemDetail = () => {
   const handleToggleStatus = async () => {
     setActionLoading(true);
     try {
-      const response = await axios.put(
-        `${BASIC_URL}/api/items/update-item/${id}`,
+      const response = await axiosInstance.put(
+        `/api/items/update-item/${id}`,
         { isActive: !item.isActive }
       );
       if (response.data.success) {
@@ -97,7 +92,7 @@ const ItemDetail = () => {
   const handleDeleteItem = async () => {
     setActionLoading(true);
     try {
-      await axios.delete(`${BASIC_URL}/items/delete-item/${id}`, {
+      await axiosInstance.delete(`/items/delete-item/${id}`, {
         withCredentials: true
       });
       toast.success('Item deleted successfully!');

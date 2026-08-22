@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const UpdateCategory = () => {
   const { BASIC_URL } = useStock();
@@ -34,7 +35,7 @@ const UpdateCategory = () => {
     const fetchCategory = async () => {
       setFetching(true);
       try {
-        const response = await axios.get(`${BASIC_URL}/api/categories/get-category/${id}`);
+        const response = await axiosInstance.get(`/api/categories/get-category/${id}`);
         
         if (response.data.success) {
           const category = response.data.category;
@@ -173,8 +174,8 @@ const UpdateCategory = () => {
         submitData.description = formData.description.trim() || '';
       }
 
-      const response = await axios.put(
-        `${BASIC_URL}/api/categories/update-category/${id}`,
+      const response = await axiosInstance.put(
+        `/api/categories/update-category/${id}`,
         submitData
       );
 

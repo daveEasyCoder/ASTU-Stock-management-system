@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { 
   FaTruck,
   FaSearch,
@@ -17,7 +16,6 @@ import {
   FaTimes,
   FaToggleOn,
   FaToggleOff,
-  FaBuilding,
   FaUser,
   FaPhone,
   FaEnvelope,
@@ -26,10 +24,10 @@ import {
   FaCalendarAlt
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig'
 
 const SupplierList = () => {
-  const { BASIC_URL } = useStock();
+
   const navigate = useNavigate();
   
   const [suppliers, setSuppliers] = useState([]);
@@ -50,7 +48,7 @@ const SupplierList = () => {
   const fetchSuppliers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BASIC_URL}/api/suppliers/get-suppliers`);
+      const response = await axiosInstance.get(`/api/suppliers/get-suppliers`);
       if (response.data.success) {
         setSuppliers(response.data.suppliers);
       }
@@ -96,9 +94,7 @@ const SupplierList = () => {
     
     setActionLoading(true);
     try {
-      await axios.delete(`${BASIC_URL}/suppliers/delete-supplier/${selectedSupplier._id}`, {
-        withCredentials: true
-      });
+      await axiosInstance.delete(`/api/suppliers/delete-supplier/${selectedSupplier._id}`);
       toast.success('Supplier deleted successfully!');
       fetchSuppliers();
       setShowDeleteModal(false);
@@ -114,8 +110,8 @@ const SupplierList = () => {
   // Handle toggle status
   const handleToggleStatus = async (supplier) => {
     try {
-      const response = await axios.put(
-        `${BASIC_URL}/api/suppliers/update-supplier/${supplier._id}`,
+      const response = await axiosInstance.put(
+        `/api/suppliers/update-supplier/${supplier._id}`,
         { isActive: !supplier.isActive }
       );
       if (response.data.success) {

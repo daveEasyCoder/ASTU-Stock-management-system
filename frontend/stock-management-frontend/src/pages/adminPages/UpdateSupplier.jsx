@@ -17,6 +17,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const UpdateSupplier = () => {
     const { BASIC_URL } = useStock();
@@ -42,7 +43,7 @@ const UpdateSupplier = () => {
         const fetchSupplier = async () => {
             setFetching(true);
             try {
-                const response = await axios.get(`${BASIC_URL}/api/suppliers/get-supplier/${id}`);
+                const response = await axiosInstance.get(`/api/suppliers/get-supplier/${id}`);
 
                 if (response.data.success) {
                     const supplier = response.data.supplier;
@@ -252,8 +253,8 @@ const UpdateSupplier = () => {
                 submitData.isActive = formData.isActive;
             }
 
-            const response = await axios.put(
-                `${BASIC_URL}/api/suppliers/update-supplier/${id}`,
+            const response = await axiosInstance.put(
+                `/api/suppliers/update-supplier/${id}`,
                 submitData
             );
 

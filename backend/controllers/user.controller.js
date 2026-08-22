@@ -168,11 +168,14 @@ export const getUsers = async (req, res) => {
             .select("-password")
             .populate("department", "name isActive code")
             .sort({ createdAt: -1 });
+        
+        const filteredUser = users.filter(u => u.role !== `Admin`)
+        
 
         res.status(200).json({
             success: true,
-            count: users.length,
-            users,
+            count: filteredUser.length,
+            users:filteredUser,
         });
     } catch (error) {
         res.status(500).json({
@@ -578,9 +581,9 @@ export const resetPassword = async (req, res) => {
 
         // Generate a random 6-character temporary password
         const generateTemporaryPassword = () => {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            const characters = '0123456789';
             let password = '';
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 6; i++) {
                 password += characters.charAt(Math.floor(Math.random() * characters.length));
             }
             return password;

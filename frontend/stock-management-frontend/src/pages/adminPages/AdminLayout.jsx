@@ -1,34 +1,42 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import {
-    FaCalendarAlt,
-    FaFolder,
-    FaList,
-    FaMapMarkerAlt,
-    FaUser,
     FaBoxes,
     FaTags,
     FaUsers,
     FaChartLine,
-    FaCog,
     FaSignOutAlt,
     FaChevronDown,
     FaChevronRight,
     FaUniversity,
     FaHandshake,
-    FaShoppingCart 
+    FaShoppingCart
 } from 'react-icons/fa'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
 import { X, Menu, LayoutDashboard, ChevronLeft, ChevronRight as ChevronRightIcon } from 'lucide-react'
-import { useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../utils/axiosConfig'
+import { toast } from 'react-toastify'
 
 const AdminLayout = () => {
     const [activeLink, setActiveLink] = useState(0);
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const location = useLocation();
+
+    const [user, setUser] = useState(null)
+
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            try {
+                setUser(JSON.parse(userData));
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                setUser(null);
+            }
+        }
+    }, []);
 
     // Professional blue color palette
     const colors = {
@@ -49,7 +57,8 @@ const AdminLayout = () => {
         title: "Dashboard",
         icon: <LayoutDashboard className="w-5 h-5" />,
         to: "/admin",
-        isSingle: true
+        isSingle: true,
+        roles: ['Admin', 'Store Manager']
     }, {
         title: "User Management",
         icon: <FaUsers className="w-5 h-5" />,
@@ -59,7 +68,8 @@ const AdminLayout = () => {
         }, {
             subTitle: 'User List',
             to: 'user-list'
-        }]
+        }],
+        roles: ['Admin']
     }, {
         title: "Category Management",
         icon: <FaTags className="w-5 h-5" />,
@@ -69,7 +79,8 @@ const AdminLayout = () => {
         }, {
             subTitle: 'Category List',
             to: 'category-list'
-        }]
+        }],
+        roles: ['Admin', 'Store Manager']
     }, {
         title: "Dep Management",
         icon: <FaUniversity className="w-5 h-5" />,
@@ -79,7 +90,8 @@ const AdminLayout = () => {
         }, {
             subTitle: 'Department List',
             to: 'department-list'
-        }]
+        }],
+        roles: ['Admin']
     }, {
         title: "Supplier Management",
         icon: <FaHandshake className="w-5 h-5" />,
@@ -89,7 +101,8 @@ const AdminLayout = () => {
         }, {
             subTitle: 'Supplier List',
             to: 'supplier-list'
-        }]
+        }],
+        roles: ['Admin', 'Store Manager']
     },
     {
         title: "Item Management",
@@ -100,7 +113,8 @@ const AdminLayout = () => {
         }, {
             subTitle: 'Item List',
             to: 'item-list'
-        }]
+        }],
+        roles: ['Admin', 'Store Manager']
     },
     {
         title: "Purchase Management",
@@ -111,7 +125,8 @@ const AdminLayout = () => {
         }, {
             subTitle: 'Purchase List',
             to: 'purchase-list'
-        }]
+        }],
+        roles: ['Admin', 'Store Manager']
     }, {
         title: "Reports",
         icon: <FaChartLine className="w-5 h-5" />,
@@ -121,9 +136,18 @@ const AdminLayout = () => {
         }, {
             subTitle: 'Sales Report',
             to: 'sales-report'
-        }]
+        }],
+        roles: ['Admin', 'Store Manager']
     }]
 
+    const userRole = user?.role;
+
+
+    const filteredSidebar = sidebar.filter(item => {
+        // If no roles defined, show to everyone (fallback)
+        if (!item.roles) return true;
+        return item.roles.includes(userRole);
+    });
     const [activeIndex, setActiveIndex] = useState([])
 
     const handleShowChildren = index => {
@@ -136,16 +160,18 @@ const AdminLayout = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/users/logout`, {
-                withCredentials: true
-            });
-            if (response.data.success) {
-                navigate("/login")
-            }
+            await axiosInstance.post(`/api/auth/logout`, {});
+            localStorage.removeItem('user');
+            localStorage.removeItem('rememberMe');
+            toast.success('Logged out successfully');
+            navigate('/');
         } catch (error) {
-            console.log(error);
+            console.error('Logout error:', error);
+            // Even if API fails, clear local data
+            localStorage.removeItem('user');
+            navigate('/');
         }
-    }
+    };
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed)
@@ -201,7 +227,7 @@ const AdminLayout = () => {
 
                     {/* Navigation Links */}
                     <div className="flex-1 overflow-y-auto py-4 px-3 custom-scrollbar">
-                        {sidebar.map((side, index) => (
+                        {filteredSidebar.map((side, index) => (
                             <div key={index} className="mb-1">
                                 {side.isSingle ? (
                                     // Single link (Dashboard)
@@ -211,8 +237,8 @@ const AdminLayout = () => {
                                             setActiveLink(index)
                                         }}
                                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${location.pathname === side.to
-                                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
-                                                : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                                            : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                                             } ${isCollapsed ? 'justify-center' : ''}`}
                                         title={isCollapsed ? side.title : ''}
                                     >
@@ -225,8 +251,8 @@ const AdminLayout = () => {
                                         <button
                                             onClick={() => handleShowChildren(index)}
                                             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${isChildActive(side.children)
-                                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
-                                                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                                                : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                                                 } ${isCollapsed ? 'justify-center' : ''}`}
                                             title={isCollapsed ? side.title : ''}
                                         >
@@ -249,8 +275,8 @@ const AdminLayout = () => {
                                                         to={child.to}
                                                         onClick={() => setIsSidebarVisible(false)}
                                                         className={`block px-3 py-2 rounded-lg text-sm transition-all duration-200 ${location.pathname.includes(child.to)
-                                                                ? 'text-blue-400 bg-blue-500/10 font-medium'
-                                                                : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                                                            ? 'text-blue-400 bg-blue-500/10 font-medium'
+                                                            : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
                                                             }`}
                                                     >
                                                         {child.subTitle}
@@ -268,7 +294,7 @@ const AdminLayout = () => {
                     <div className="border-t border-slate-700 pt-4 pb-6 px-3">
                         <button
                             onClick={handleLogout}
-                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 ${isCollapsed ? 'justify-center' : ''
+                            className={`w-full flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 ${isCollapsed ? 'justify-center' : ''
                                 }`}
                             title={isCollapsed ? 'Logout' : ''}
                         >
@@ -297,15 +323,15 @@ const AdminLayout = () => {
                                 D
                             </div>
                             <div className="hidden sm:block">
-                                <p className="font-semibold text-gray-800 text-sm">Dawit</p>
-                                <p className="text-gray-500 text-xs">dawit@example.com</p>
+                                {user && user?.fullName && <p className="font-semibold text-gray-800 text-sm">{user.fullName}</p>}
+                                {user && user?.email && <p className="text-gray-500 text-xs">{user.email}</p>}
                             </div>
                         </div>
                     </div>
                     <div>
                         <button
                             onClick={handleLogout}
-                            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2 rounded-lg shadow-sm shadow-blue-500/25 transition-all duration-200 hover:shadow-md"
+                            className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white text-sm font-medium px-5 py-2 rounded-lg shadow-sm shadow-blue-500/25 transition-all duration-200 hover:shadow-md"
                         >
                             Logout
                         </button>

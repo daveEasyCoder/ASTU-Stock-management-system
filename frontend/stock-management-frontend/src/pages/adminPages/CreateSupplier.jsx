@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import {
   FaArrowLeft,
-  FaSave,
   FaTimes,
   FaSpinner,
   FaCheckCircle,
@@ -14,14 +12,13 @@ import {
   FaEnvelope,
   FaMapMarkerAlt,
   FaPlus,
-  FaTruck,
-  FaInfoCircle
+  FaTruck
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const CreateSupplier = () => {
-  const { BASIC_URL } = useStock();
+
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -176,8 +173,8 @@ const CreateSupplier = () => {
         address: formData.address.trim()
       };
 
-      const response = await axios.post(
-        `${BASIC_URL}/api/suppliers/create-supplier`,
+      const response = await axiosInstance.post(
+        `/api/suppliers/create-supplier`,
         submitData
       );
 

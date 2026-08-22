@@ -6,18 +6,12 @@ import {
   FaSpinner,
   FaExclamationCircle,
   FaExchangeAlt,
-  FaBoxes,
-  FaUser,
-  FaCalendarAlt,
   FaInfoCircle,
-  FaHashtag,
-  FaTag
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const StockTransactionsByPurchase = () => {
-  const { BASIC_URL } = useStock();
   const navigate = useNavigate();
   const { purchaseId } = useParams();
   
@@ -36,8 +30,8 @@ const StockTransactionsByPurchase = () => {
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${BASIC_URL}/api/stock-transactions/get-stock-transactions-by-purchase/${purchaseId}`
+      const response = await axiosInstance.get(
+        `/api/stock-transactions/get-stock-transactions-by-purchase/${purchaseId}`
       );
       if (response.data.success) {
         setTransactions(response.data.transactions);
@@ -54,8 +48,8 @@ const StockTransactionsByPurchase = () => {
 
   const fetchPurchaseInfo = async () => {
     try {
-      const response = await axios.get(
-        `${BASIC_URL}/api/purchases/get-purchase/${purchaseId}`
+      const response = await axiosInstance.get(
+        `/api/purchases/get-purchase/${purchaseId}`
       );
       if (response.data.success) {
         setPurchaseInfo(response.data.purchase);

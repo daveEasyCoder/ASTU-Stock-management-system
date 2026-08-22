@@ -18,17 +18,13 @@ import {
   FaToggleOn,
   FaToggleOff,
   FaUsers,
-  FaUser,
-  FaEnvelope,
-  FaPhone,
-  FaUserTag,
   FaUniversity,
   FaEye,
-  FaPlus,
-  FaUserCheck
+  FaPlus
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useStock } from '../../context/StockContext';
+import axiosInstance from '../../utils/axiosConfig';
 
 const DepartmentDetail = () => {
   const { BASIC_URL } = useStock();
@@ -51,7 +47,7 @@ const DepartmentDetail = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${BASIC_URL}/api/departments/get-department/${id}`);
+      const response = await axiosInstance.get(`/api/departments/get-department/${id}`);
       if (response.data.success) {
         setDepartment(response.data.department);
         setUsers(response.data.department.users || []);
@@ -73,8 +69,8 @@ const DepartmentDetail = () => {
   const handleToggleStatus = async () => {
     setActionLoading(true);
     try {
-      const response = await axios.put(
-        `${BASIC_URL}/api/departments/update-department/${id}`,
+      const response = await axiosInstance.put(
+        `/api/departments/update-department/${id}`,
         { isActive: !department.isActive }
       );
       if (response.data.success) {
@@ -93,9 +89,7 @@ const DepartmentDetail = () => {
   const handleDeleteDepartment = async () => {
     setActionLoading(true);
     try {
-      await axios.delete(`${BASIC_URL}/departments/delete-department/${id}`, {
-        withCredentials: true
-      });
+      await axiosInstance.delete(`/departments/delete-department/${id}`);
       toast.success('Department deleted successfully!');
       setTimeout(() => {
         navigate('/admin/department-list');
