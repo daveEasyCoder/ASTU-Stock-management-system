@@ -345,7 +345,6 @@ const CreateUser = () => {
   // Get role color
   const getRoleColor = (role) => {
     const roleColors = {
-      'Admin': 'purple',
       'Store Manager': 'blue',
       'Department Head': 'green',
       'Staff': 'gray'

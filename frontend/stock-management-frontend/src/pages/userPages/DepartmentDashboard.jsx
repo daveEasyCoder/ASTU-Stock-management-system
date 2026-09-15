@@ -144,25 +144,6 @@ const DepartmentDashboard = () => {
         </div>
       </div>
 
-      {/* Low Stock Alert */}
-      {stats.lowStockItems > 0 && (
-        <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FaExclamationTriangle className="text-amber-600 text-xl" />
-            <div>
-              <p className="text-sm font-medium text-amber-800">
-                {stats.lowStockItems} item{stats.lowStockItems !== 1 ? 's' : ''} in low stock
-              </p>
-              <p className="text-xs text-amber-600">
-                Items are below their minimum stock level
-              </p>
-            </div>
-          </div>
-          <button className="text-sm text-amber-700 hover:text-amber-800 font-medium flex items-center gap-1">
-            View All <FaArrowRight className="text-xs" />
-          </button>
-        </div>
-      )}
 
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

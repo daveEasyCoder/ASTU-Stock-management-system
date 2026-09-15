@@ -33,6 +33,7 @@ const PurchaseDetail = () => {
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0,0)
     fetchPurchaseDetails();
   }, [id]);
 
@@ -134,7 +135,7 @@ const PurchaseDetail = () => {
         {/* Header */}
         <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <button
-            onClick={() => navigate('/admin/purchase-list')}
+            onClick={() => navigate(-1)}
             className="flex items-center text-slate-600 hover:text-blue-600 transition-colors group text-sm sm:text-base self-start"
           >
             <FaArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />

@@ -15,7 +15,6 @@ import {
 } from 'react-icons/fa';
 import { HiMenu, HiX } from 'react-icons/hi';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import axiosInstance from '../../utils/axiosConfig';
 
 const UserLayout = () => {
@@ -107,7 +106,7 @@ const UserLayout = () => {
       {
         title: 'Dashboard',
         icon: <FaHome className="w-5 h-5" />,
-        path: '/user',
+        path: '/user/staff-dashboard',
         isSingle: true,
       },
       {
@@ -135,7 +134,7 @@ const UserLayout = () => {
       {
         title: 'Dashboard',
         icon: <FaHome className="w-5 h-5" />,
-        path: '/user',
+        path: '/user/dashboard',
         isSingle: true,
       },
       {
@@ -332,6 +331,7 @@ const UserLayout = () => {
           </button>
         </div>
       </aside>
+
 
       {/* Main Content */}
       <div

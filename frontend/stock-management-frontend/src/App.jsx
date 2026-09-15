@@ -27,7 +27,6 @@ import PurchaseList from './pages/adminPages/PurchaseList'
 import PurchaseDetail from './pages/adminPages/PurchaseDetail'
 import StockTransactionsByPurchase from './pages/adminPages/StockTransactionsByPurchase'
 import Unauthorized from './pages/Unauthorized'
-import Dashboard from './pages/adminPages/Dashboard'
 import UserLayout from './pages/userPages/UserLayout'
 import AvailableItems from './pages/userPages/AvailableItems'
 import CreateStockRequest from './pages/userPages/CreateStockRequest'
@@ -38,6 +37,14 @@ import RequestDetail from './pages/userPages/MyRequestDetail'
 import DepartmentDashboard from './pages/userPages/DepartmentDashboard'
 import DepartmentReport from './pages/userPages/DepartmentReport'
 import UserProfile from './pages/userPages/UserProfile'
+import UserRedirect from './pages/userPages/userRedirect'
+import StaffDashboard from './pages/userPages/StaffDashboard'
+import AllRequests from './pages/adminPages/AllRequests'
+import RequestsDetail from './pages/adminPages/RequestsDetail'
+import Issuance from './pages/adminPages/Issuance'
+import StockTransactions from './pages/adminPages/StockTransactions'
+import DashboardRouter from './pages/adminPages/DashboardRouter'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -48,7 +55,10 @@ function App() {
       <Route path="/unauthorized" element={<Unauthorized />} />
 
       <Route path='/user' element={<UserLayout />}>
-        <Route path="" element={<DepartmentDashboard />} />
+        <Route path="" element={<UserRedirect />} />
+
+        <Route path="dashboard" element={<DepartmentDashboard />} />
+        <Route path="staff-dashboard" element={<StaffDashboard />} />
         <Route path='items' element={<AvailableItems />} />
         <Route path='create-stock-request' element={<CreateStockRequest />} />
         <Route path='my-requests' element={<MyRequests />} />
@@ -68,7 +78,9 @@ function App() {
 
       <Route path='/admin' element={<AdminLayout />}>
           // User routes
-        <Route path='' element={<Dashboard />} />
+        {/* <Route path='' element={<Dashboard />} /> */}
+        <Route path='' element={<DashboardRouter />} />
+
         <Route path='user-list' element={<UserList />} />
         <Route path='create-user' element={<CreateUser />} />
         <Route path='user-detail/:id' element={<UserDetail />} />
@@ -97,13 +109,20 @@ function App() {
         <Route path='item-detail/:id' element={<ItemDetail />} />
         <Route path='update-item/:id' element={<UpdateItem />} />
 
-          // Item routes
+          // Purchase routes
         <Route path='create-purchase' element={<CreatePurchase />} />
         <Route path='purchase-list' element={<PurchaseList />} />
         <Route path='purchase-detail/:id' element={<PurchaseDetail />} />
 
         <Route path='stock-transaction-by-purchase/:purchaseId' element={<StockTransactionsByPurchase />} />
+        <Route path='all-requests' element={<AllRequests />} />
+        <Route path='requests-detail/:id' element={<RequestsDetail />} />
+        <Route path='issuance' element={<Issuance />} />
 
+        // Transactions routes
+        <Route path='transactions' element={<StockTransactions />} />
+
+        <Route path="profile" element={<UserProfile />} />
       </Route>
 
     </Routes>

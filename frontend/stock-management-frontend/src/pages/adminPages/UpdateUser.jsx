@@ -52,7 +52,6 @@ const UpdateUser = () => {
     const [touched, setTouched] = useState({});
 
     const roles = [
-        { value: 'Admin', label: 'Admin', color: 'purple' },
         { value: 'Store Manager', label: 'Store Manager', color: 'blue' },
         { value: 'Department Head', label: 'Department Head', color: 'green' },
         { value: 'Staff', label: 'Staff', color: 'gray' }
@@ -358,9 +357,9 @@ const UpdateUser = () => {
 
             if (response.data.success) {
                 toast.success('User updated successfully!');
-                // setTimeout(() => {
-                //   navigate(`/admin/user-detail/${id}`);
-                // }, 1500);
+                setTimeout(() => {
+                  navigate(`/admin/user-list`);
+                }, 1500);
             }
         } catch (error) {
             console.error('Error updating user:', error);
@@ -380,7 +379,6 @@ const UpdateUser = () => {
     // Get role color
     const getRoleColor = (role) => {
         const roleColors = {
-            'Admin': 'purple',
             'Store Manager': 'blue',
             'Department Head': 'green',
             'Staff': 'gray'
@@ -675,12 +673,7 @@ const UpdateUser = () => {
                                             {errors.department}
                                         </p>
                                     )}
-                                    {formData.role === 'Admin' && (
-                                        <p className="mt-1 text-xs text-blue-600">
-                                            <FaExclamationCircle className="inline mr-1" size={12} />
-                                            An admin user does not necessarily need a department
-                                        </p>
-                                    )}
+                              
                                 </div>
 
                                 {/* Status */}

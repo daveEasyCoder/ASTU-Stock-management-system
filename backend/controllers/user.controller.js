@@ -54,7 +54,6 @@ export const createUser = async (req, res) => {
 
         // Validate role
         const allowedRoles = [
-            "Admin",
             "Store Manager",
             "Department Head",
             "Staff"
@@ -280,7 +279,6 @@ export const updateUser = async (req, res) => {
 
         // Allowed roles
         const allowedRoles = [
-            "Admin",
             "Store Manager",
             "Department Head",
             "Staff",

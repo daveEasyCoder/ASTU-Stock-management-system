@@ -43,7 +43,6 @@ const CreateStockRequest = () => {
       try {
         const parsed = JSON.parse(userData);
         setUser(parsed);
-        console.log(parsed);
         
       } catch (error) {
         console.error('Error parsing user data:', error);
@@ -159,8 +158,6 @@ const CreateStockRequest = () => {
         })),
         remarks: formData.remarks.trim() || '',
       };
-
-      console.log(submitData);
       
       const response = await axiosInstance.post(
         '/api/stock-requests/create-request',

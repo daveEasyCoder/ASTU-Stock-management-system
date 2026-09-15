@@ -10,7 +10,10 @@ import {
     FaChevronRight,
     FaUniversity,
     FaHandshake,
-    FaShoppingCart
+    FaClipboardList,
+    FaShoppingCart,
+    FaExchangeAlt,
+    FaUser
 } from 'react-icons/fa'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
@@ -21,7 +24,6 @@ import { toast } from 'react-toastify'
 const AdminLayout = () => {
     const [activeLink, setActiveLink] = useState(0);
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const location = useLocation();
 
     const [user, setUser] = useState(null)
@@ -59,7 +61,8 @@ const AdminLayout = () => {
         to: "/admin",
         isSingle: true,
         roles: ['Admin', 'Store Manager']
-    }, {
+    },
+    {
         title: "User Management",
         icon: <FaUsers className="w-5 h-5" />,
         children: [{
@@ -127,7 +130,27 @@ const AdminLayout = () => {
             to: 'purchase-list'
         }],
         roles: ['Admin', 'Store Manager']
-    }, {
+    },
+
+    {
+        title: 'Stock Requests',
+        icon: <FaClipboardList className="w-5 h-5" />,
+        children: [
+            { subTitle: 'All Requests', to: 'all-requests' },
+            { subTitle: 'Issuance', to: 'issuance' },
+        ],
+    },
+
+    {
+        title: 'Transactions',
+        icon: <FaExchangeAlt className="w-5 h-5" />,
+        children: [
+            { subTitle: 'All Transactions', to: 'transactions' },
+        ],
+        roles: ['Admin', 'Store Manager']
+    },
+
+    {
         title: "Reports",
         icon: <FaChartLine className="w-5 h-5" />,
         children: [{
@@ -138,7 +161,14 @@ const AdminLayout = () => {
             to: 'sales-report'
         }],
         roles: ['Admin', 'Store Manager']
-    }]
+    },
+    {
+        title: 'Profile',
+        icon: <FaUser className="w-5 h-5" />,
+        to: '/admin/profile',
+        isSingle: true,
+        roles: ['Store Manager']
+    },]
 
     const userRole = user?.role;
 
@@ -173,9 +203,6 @@ const AdminLayout = () => {
         }
     };
 
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed)
-    }
 
     // Check if a link is active
     const isLinkActive = (to) => {
@@ -192,33 +219,24 @@ const AdminLayout = () => {
         <>
             {/* Sidebar */}
             <div
-                className={`h-screen fixed top-0 left-0 z-20 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-20' : 'w-64'
-                    }
-                bg-linear-to-b from-slate-900 via-slate-800 to-slate-900 shadow-2xl overflow-hidden`}
+                className={`h-screen fixed ${!isSidebarVisible ? 'left-0' : '-left-100'} top-0 -left-100 sm:left-0 z-20 transition-all duration-300 ease-in-out w-64 bg-linear-to-b from-slate-900 via-slate-800 to-slate-900 shadow-2xl overflow-hidden`}
                 style={{ backgroundColor: colors.sidebarBg }}
             >
                 <div className="flex flex-col h-full">
                     {/* Logo & Header */}
-                    <div className={`flex items-center justify-between px-4 py-5 border-b border-slate-700 ${isCollapsed ? 'flex-col gap-3' : ''
-                        }`}>
-                        <div className={`flex items-center gap-2 ${isCollapsed ? 'justify-center w-full' : ''}`}>
+                    <div className={`flex items-center justify-between px-4 py-5 border-b border-slate-700 `}>
+                        <div className={`flex items-center gap-2`}>
                             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 shadow-lg shadow-blue-500/30">
                                 <FaBoxes className="text-white w-5 h-5" />
                             </div>
-                            {!isCollapsed && (
-                                <span className="text-xl font-bold text-white tracking-tight">
-                                    Astu<span className="text-blue-400">Stock</span>
-                                </span>
-                            )}
+                            <span className="text-xl font-bold text-white tracking-tight">
+                                Astu<span className="text-blue-400">Stock</span>
+                            </span>
+
                         </div>
+
                         <button
-                            onClick={toggleSidebar}
-                            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
-                        >
-                            {isCollapsed ? <ChevronRightIcon size={20} /> : <ChevronLeft size={20} />}
-                        </button>
-                        <button
-                            onClick={() => setIsSidebarVisible(false)}
+                            onClick={() => setIsSidebarVisible(prev => !prev)}
                             className="sm:hidden text-slate-400 hover:text-white"
                         >
                             <X size={24} />
@@ -239,11 +257,11 @@ const AdminLayout = () => {
                                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${location.pathname === side.to
                                             ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
                                             : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                                            } ${isCollapsed ? 'justify-center' : ''}`}
-                                        title={isCollapsed ? side.title : ''}
+                                            }`}
+
                                     >
                                         <span className="text-xl">{side.icon}</span>
-                                        {!isCollapsed && <span className="text-sm font-medium">{side.title}</span>}
+                                        <span className="text-sm font-medium">{side.title}</span>
                                     </Link>
                                 ) : (
                                     // Dropdown links
@@ -253,27 +271,27 @@ const AdminLayout = () => {
                                             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${isChildActive(side.children)
                                                 ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
                                                 : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                                                } ${isCollapsed ? 'justify-center' : ''}`}
-                                            title={isCollapsed ? side.title : ''}
+                                                } `}
+                                            
                                         >
                                             <span className="text-xl">{side.icon}</span>
-                                            {!isCollapsed && (
-                                                <>
-                                                    <span className="text-sm font-medium flex-1 text-left">{side.title}</span>
-                                                    <span className="text-xs">
-                                                        {activeIndex.includes(index) ? <FaChevronDown /> : <FaChevronRight />}
-                                                    </span>
-                                                </>
-                                            )}
+
+                                            <>
+                                                <span className="text-sm font-medium flex-1 text-left">{side.title}</span>
+                                                <span className="text-xs">
+                                                    {activeIndex.includes(index) ? <FaChevronDown /> : <FaChevronRight />}
+                                                </span>
+                                            </>
+
                                         </button>
 
-                                        {!isCollapsed && activeIndex.includes(index) && (
+                                        {activeIndex.includes(index) && (
                                             <div className="mt-1 ml-4 pl-2 border-l-2 border-blue-500/30 space-y-1">
                                                 {side.children.map((child, i) => (
                                                     <Link
                                                         key={i}
                                                         to={child.to}
-                                                        onClick={() => setIsSidebarVisible(false)}
+                                                        // onClick={() => setIsSidebarVisible(false)}
                                                         className={`block px-3 py-2 rounded-lg text-sm transition-all duration-200 ${location.pathname.includes(child.to)
                                                             ? 'text-blue-400 bg-blue-500/10 font-medium'
                                                             : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
@@ -294,12 +312,11 @@ const AdminLayout = () => {
                     <div className="border-t border-slate-700 pt-4 pb-6 px-3">
                         <button
                             onClick={handleLogout}
-                            className={`w-full flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 ${isCollapsed ? 'justify-center' : ''
-                                }`}
-                            title={isCollapsed ? 'Logout' : ''}
+                            className={`w-full flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200`}
+                           
                         >
                             <FaSignOutAlt className="text-xl" />
-                            {!isCollapsed && <span className="text-sm font-medium">Logout</span>}
+                        <span className="text-sm font-medium">Logout</span>
                         </button>
                     </div>
                 </div>
@@ -307,13 +324,12 @@ const AdminLayout = () => {
 
             {/* Header */}
             <div
-                className={`fixed top-0 right-0 z-10 transition-all duration-300 ease-in-out ${isCollapsed ? 'left-20' : 'left-64'
-                    } ${isSidebarVisible ? '' : 'left-0'}`}
+                className={`fixed top-0 right-0 z-10 transition-all duration-300 ease-in-out left-0 sm:left-64`}
             >
                 <div className="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200 shadow-sm">
                     <div className="flex items-center gap-3">
                         <button
-                            onClick={() => setIsSidebarVisible(true)}
+                            onClick={() => setIsSidebarVisible(prev => !prev)}
                             className="sm:hidden text-gray-600 hover:text-blue-600 transition-colors"
                         >
                             <Menu size={24} />
@@ -341,8 +357,7 @@ const AdminLayout = () => {
 
             {/* Main Content */}
             <div
-                className={`transition-all duration-300 ease-in-out ${isCollapsed ? 'ml-20' : 'ml-64'
-                    } ${!isSidebarVisible ? 'ml-0' : ''} mt-16 p-6 bg-gray-50 min-h-screen`}
+                className={`transition-all duration-300 ease-in-out  ml-0 sm:ml-64 mt-16 p-6 bg-gray-50 min-h-screen`}
             >
                 <Outlet />
             </div>

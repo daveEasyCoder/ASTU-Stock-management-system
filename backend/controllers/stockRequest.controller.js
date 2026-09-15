@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import User from '../model/user.js'
 import Item from '../model/item.js'
 import StockRequest from '../model/stockRequest.js';
+import StockTransaction from '../model/stockTransaction.js'
 
 
 
@@ -591,6 +592,159 @@ export const getDepartmentRequests = async (req, res) => {
 
     } catch (error) {
         console.error('Get Department Requests Error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error.',
+        });
+    }
+};
+
+
+/**
+ * GET all requests (Store Manager & Admin only)
+ */
+export const getAllRequests = async (req, res) => {
+    try {
+        // Fetch all requests with populated fields
+        const requests = await StockRequest.find()
+            .populate('requestedBy', 'fullName email phone')
+            .populate('department', 'name code')
+            .populate('approvedBy', 'fullName email')
+            .populate('issuedBy', 'fullName email')
+            .populate('requestedItems.item', 'name code unit quantity minimumStockLevel')
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            count: requests.length,
+            requests,
+        });
+
+    } catch (error) {
+        console.error('Get All Requests Error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error.',
+        });
+    }
+};
+
+/**
+ * Issue stock request (Store Manager only)
+ * PUT /api/requests/issue/:id
+ */
+export const issueStockRequest = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id;
+
+        // 1. Validate ID
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid request ID.',
+            });
+        }
+
+        // 2. Find request
+        const request = await StockRequest.findById(id);
+        if (!request) {
+            return res.status(404).json({
+                success: false,
+                message: 'Request not found.',
+            });
+        }
+
+        // 3. Check status
+        if (request.status === 'Issued') {
+            return res.status(400).json({
+                success: false,
+                message: 'Request has already been issued.',
+            });
+        }
+
+        if (request.status !== 'Approved') {
+            return res.status(400).json({
+                success: false,
+                message: `Cannot issue request with status: ${request.status}. Only Approved requests can be issued.`,
+            });
+        }
+
+        // 4. Check stock availability for each item
+        const insufficientItems = [];
+        for (const requestedItem of request.requestedItems) {
+            const item = await Item.findById(requestedItem.item);
+            if (!item) {
+                return res.status(404).json({
+                    success: false,
+                    message: `Item not found: ${requestedItem.item}`,
+                });
+            }
+
+            if (item.quantity < requestedItem.quantity) {
+                insufficientItems.push({
+                    name: item.name,
+                    code: item.code,
+                    available: item.quantity,
+                    requested: requestedItem.quantity,
+                    shortfall: requestedItem.quantity - item.quantity,
+                });
+            }
+        }
+
+        if (insufficientItems.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Insufficient stock for some items.',
+                insufficientItems,
+            });
+        }
+
+        // 5. Decrease item quantities & create transactions
+        const transactions = [];
+        for (const requestedItem of request.requestedItems) {
+            const item = await Item.findById(requestedItem.item);
+            item.quantity -= requestedItem.quantity;
+            await item.save();
+
+            // Create stock transaction
+            const transaction = new StockTransaction({
+                item: requestedItem.item,
+                transactionType: 'Stock Out',
+                quantity: requestedItem.quantity,
+                department:request.department,
+                stockRequest: request._id,
+                performedBy: userId,
+                reason: `Issued for request ${request.requestNumber}`,
+                transactionDate: new Date(),
+            });
+            await transaction.save();
+            transactions.push(transaction);
+        }
+
+        // 6. Update request status
+        request.status = 'Issued';
+        request.issuedBy = userId;
+        request.issuedDate = new Date();
+        await request.save();
+
+        // 7. Return response
+        const updatedRequest = await StockRequest.findById(id)
+            .populate('requestedBy', 'fullName email')
+            .populate('department', 'name code')
+            .populate('approvedBy', 'fullName email')
+            .populate('issuedBy', 'fullName email')
+            .populate('requestedItems.item', 'name code unit quantity');
+
+        return res.status(200).json({
+            success: true,
+            message: 'Stock issued successfully.',
+            request: updatedRequest,
+            transactions,
+        });
+
+    } catch (error) {
+        console.error('Issue Stock Request Error:', error);
         return res.status(500).json({
             success: false,
             message: 'Internal server error.',
