@@ -37,7 +37,6 @@ import RequestDetail from './pages/userPages/MyRequestDetail'
 import DepartmentDashboard from './pages/userPages/DepartmentDashboard'
 import DepartmentReport from './pages/userPages/DepartmentReport'
 import UserProfile from './pages/userPages/UserProfile'
-import UserRedirect from './pages/userPages/userRedirect'
 import StaffDashboard from './pages/userPages/StaffDashboard'
 import AllRequests from './pages/adminPages/AllRequests'
 import RequestsDetail from './pages/adminPages/RequestsDetail'
@@ -47,10 +46,10 @@ import DashboardRouter from './pages/adminPages/DashboardRouter'
 import StockAdjustment from './pages/adminPages/StockAdjustment'
 import StockReport from './pages/adminPages/StockReport'
 import StaffItemDetail from './pages/userPages/StaffItemDetail'
+import UserRedirect from './pages/userPages/UserRedirect'
 
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <Routes>
