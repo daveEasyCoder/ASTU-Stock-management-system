@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/create-item", protect, authorize("Admin","Store Manager"), uploadImage("items").single("image"), createItem);
 router.get("/get-items", protect, authorize("Admin","Store Manager","Staff","Department Head"), getItems);
-router.get("/get-item/:id", protect, authorize("Admin","Store Manager"), getItemById);
+router.get("/get-item/:id", protect, authorize("Admin","Store Manager","Staff","Department Head"), getItemById);
 router.put("/update-item/:id", protect, authorize("Admin","Store Manager"), uploadImage("items").single("image"), updateItem);
 
 

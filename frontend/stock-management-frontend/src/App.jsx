@@ -46,6 +46,7 @@ import StockTransactions from './pages/adminPages/StockTransactions'
 import DashboardRouter from './pages/adminPages/DashboardRouter'
 import StockAdjustment from './pages/adminPages/StockAdjustment'
 import StockReport from './pages/adminPages/StockReport'
+import StaffItemDetail from './pages/userPages/StaffItemDetail'
 
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
         <Route path="dashboard" element={<DepartmentDashboard />} />
         <Route path="staff-dashboard" element={<StaffDashboard />} />
         <Route path='items' element={<AvailableItems />} />
+        <Route path="staff-item-detail/:id" element={<StaffItemDetail />} />
         <Route path='create-stock-request' element={<CreateStockRequest />} />
         <Route path='my-requests' element={<MyRequests />} />
         <Route path="request-detail/:id" element={<RequestDetail showCancelBtn={true} />} />

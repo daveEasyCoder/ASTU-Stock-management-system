@@ -263,7 +263,7 @@ const AvailableItems = () => {
                   {/* Actions */}
                   <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
                     <button
-                      onClick={() => navigate(`/user/item-detail/${item._id}`)}
+                      onClick={() => navigate(`/user/staff-item-detail/${item._id}`)}
                       className="flex-1 px-3 py-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center justify-center gap-1"
                     >
                       <FaEye className="text-xs" />

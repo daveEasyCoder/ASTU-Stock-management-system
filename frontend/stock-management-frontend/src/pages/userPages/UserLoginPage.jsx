@@ -275,12 +275,7 @@ const UserLoginPage = () => {
                 <label className="block text-sm font-medium text-slate-700">
                   Password
                 </label>
-                <button
-                  type="button"
-                  className="text-xs text-blue-600 hover:text-blue-700 transition-colors"
-                >
-                  Forgot Password?
-                </button>
+           
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
