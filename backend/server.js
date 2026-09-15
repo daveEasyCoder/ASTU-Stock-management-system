@@ -29,9 +29,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://astu-stock-management-t6zb.onrender.com",
+];
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: allowedOrigins,
         credentials: true,
     })
 );
