@@ -44,6 +44,8 @@ import RequestsDetail from './pages/adminPages/RequestsDetail'
 import Issuance from './pages/adminPages/Issuance'
 import StockTransactions from './pages/adminPages/StockTransactions'
 import DashboardRouter from './pages/adminPages/DashboardRouter'
+import StockAdjustment from './pages/adminPages/StockAdjustment'
+import StockReport from './pages/adminPages/StockReport'
 
 
 function App() {
@@ -121,6 +123,13 @@ function App() {
 
         // Transactions routes
         <Route path='transactions' element={<StockTransactions />} />
+
+        // Stock-Adjustment routes
+        <Route path='stock-adjustment' element={<StockAdjustment />} />
+
+        // Stock-Report routes
+        <Route path='stock-report' element={<StockReport />} />
+
 
         <Route path="profile" element={<UserProfile />} />
       </Route>

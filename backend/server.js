@@ -1,5 +1,10 @@
+import dns from "dns";
+dns.setServers(["10.54.97.239"]);
+
+
 import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/user.routes.js";
 import departmentRoutes from "./routes/department.routes.js";
@@ -11,6 +16,7 @@ import stockTransactionRoutes from './routes/stockTransaction.routes.js';
 import authRoutes from './routes/auth.routes.js'
 import stockRequestRoutes from './routes/stockRequest.routes.js'
 import dashboardRoutes from './routes/dashboard.routes.js'
+import stockAdjustmentRoutes from './routes/stockAdjustment.routes.js';
 import reportRoutes from './routes/report.routes.js'
 import profileRoutes from './routes/profile.routes.js'
 
@@ -18,7 +24,7 @@ import cors from "cors";
 import path from "path"
 import cookieParser from 'cookie-parser';
 
-dotenv.config();
+
 connectDB()
 
 const app = express();
@@ -48,6 +54,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/stock-requests', stockRequestRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/stock-adjustments', stockAdjustmentRoutes);
 
 
 const PORT = process.env.PORT || 4000;

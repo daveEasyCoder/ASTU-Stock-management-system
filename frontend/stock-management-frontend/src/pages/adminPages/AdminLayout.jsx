@@ -116,7 +116,10 @@ const AdminLayout = () => {
         }, {
             subTitle: 'Item List',
             to: 'item-list'
-        }],
+        }, {
+             subTitle: 'Stock Adjustment', 
+             to: 'stock-adjustment' },
+        ],
         roles: ['Admin', 'Store Manager']
     },
     {
@@ -156,9 +159,6 @@ const AdminLayout = () => {
         children: [{
             subTitle: 'Stock Report',
             to: 'stock-report'
-        }, {
-            subTitle: 'Sales Report',
-            to: 'sales-report'
         }],
         roles: ['Admin', 'Store Manager']
     },
@@ -272,7 +272,7 @@ const AdminLayout = () => {
                                                 ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
                                                 : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                                                 } `}
-                                            
+
                                         >
                                             <span className="text-xl">{side.icon}</span>
 
@@ -313,10 +313,10 @@ const AdminLayout = () => {
                         <button
                             onClick={handleLogout}
                             className={`w-full flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200`}
-                           
+
                         >
                             <FaSignOutAlt className="text-xl" />
-                        <span className="text-sm font-medium">Logout</span>
+                            <span className="text-sm font-medium">Logout</span>
                         </button>
                     </div>
                 </div>
