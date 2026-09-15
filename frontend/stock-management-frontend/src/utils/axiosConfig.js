@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:4000',
+    baseURL: 'https://stock-management-system-voxc.onrender.com',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
