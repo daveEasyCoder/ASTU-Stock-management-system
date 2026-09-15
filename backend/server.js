@@ -1,6 +1,3 @@
-import dns from "dns";
-dns.setServers(["10.54.97.239"]);
-
 
 import express from "express";
 import dotenv from "dotenv";
