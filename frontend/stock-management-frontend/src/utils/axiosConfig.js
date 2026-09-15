@@ -17,14 +17,14 @@ axiosInstance.interceptors.response.use(
         const message = error.response?.data?.message || 'An error occurred';
 
         // --- 401 Unauthorized (Not logged in or invalid token) ---
-        // if (status === 401) {
-        //     localStorage.removeItem('user');    
+        if (status === 401) {
+            localStorage.removeItem('user');    
 
-        //     if (window.location.pathname !== '/') {
-        //         window.location.href = '/';
-        //     }
-        //     return Promise.reject(error);
-        // }
+            if (window.location.pathname !== '/') {
+                window.location.href = '/';
+            }
+            return Promise.reject(error);
+        }
 
         // --- 403 Forbidden (Authenticated but not allowed) ---
         if (status === 403) {
