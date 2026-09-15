@@ -1,3 +1,10 @@
+
+// import dns from "dns";
+// dns.setServers(["10.54.97.239"]);
+
+
+
+
 import mongoose from "mongoose";
 
 // USER

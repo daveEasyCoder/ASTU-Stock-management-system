@@ -4,7 +4,7 @@ const StockContext = createContext();
 
 export const StockProvider  = ({ children }) => {
 
-    const BASIC_URL = "http://localhost:4000";
+    const BASIC_URL = "https://stock-management-system-voxc.onrender.com";
 
     return (
         <StockContext.Provider
